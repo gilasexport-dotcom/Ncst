@@ -2,191 +2,57 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="theme-color" content="#0b1020">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
 <title>ورود امن</title>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#080c18;color:#fff}
-body{display:grid;place-items:center;padding:20px}
-.card{width:min(430px,100%);background:#11182a;border:1px solid #27314a;border-radius:26px;padding:28px;box-shadow:0 20px 70px #0008}
-.logo{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#1e293b;margin:auto auto 18px;font-size:28px}
-h1{text-align:center;font-size:25px;margin:0 0 8px}
-.sub{text-align:center;color:#9aa6bd;font-size:14px;margin-bottom:24px}
-.tabs{display:flex;gap:8px;background:#0b1020;padding:5px;border-radius:14px;margin-bottom:18px}
-.tab{flex:1;border:0;border-radius:10px;padding:11px;background:transparent;color:#9aa6bd;cursor:pointer}
-.tab.active{background:#24304a;color:#fff}
-label{display:block;font-size:13px;color:#b8c2d6;margin:12px 0 7px}
-input{width:100%;height:50px;border-radius:13px;border:1px solid #303b55;background:#0b1020;color:#fff;padding:0 14px;font-size:16px;outline:none}
-input:focus{border-color:#7285b0}
-button.primary{width:100%;height:50px;border:0;border-radius:13px;background:#fff;color:#090d18;font-weight:700;font-size:15px;margin-top:15px;cursor:pointer}
-button:disabled{opacity:.55;cursor:not-allowed}
-.google{width:100%;display:flex;justify-content:center;margin-top:14px;min-height:44px}
-.sep{display:flex;align-items:center;gap:10px;color:#6f7a91;font-size:12px;margin:17px 0}
-.sep:before,.sep:after{content:"";height:1px;background:#29344b;flex:1}
-.msg{min-height:24px;text-align:center;margin-top:14px;font-size:13px;color:#ffb4b4}
-.hidden{display:none!important}
-.otp{letter-spacing:7px;text-align:center;font-size:21px;direction:ltr}
-.note{text-align:center;color:#71809b;font-size:11px;line-height:1.8;margin-top:18px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+body{min-height:100dvh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 15% 10%,#4c1d9533,transparent 35%),#080c16;color:#f8fafc}
+.card{width:min(100%,430px);padding:clamp(22px,5vw,34px);border:1px solid #ffffff18;border-radius:22px;background:#111827e6;box-shadow:0 25px 80px #0008}
+.brand{text-align:center}.logo{width:64px;height:64px;margin:auto;display:grid;place-items:center;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#2563eb);font-size:28px;font-weight:900}
+h1{font-size:24px;margin:16px 0 7px}.muted{color:#94a3b8;font-size:14px}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:22px 0;padding:5px;border-radius:14px;background:#ffffff08}
+.tab{border:0;background:transparent;color:#94a3b8;padding:11px;border-radius:10px;font:inherit;cursor:pointer}.tab.active{background:#7c3aed33;color:#fff}
+.field{margin-bottom:15px}label{display:block;font-size:13px;margin-bottom:7px}input{width:100%;padding:13px 14px;border:1px solid #ffffff1a;border-radius:13px;background:#020617b3;color:#fff;outline:none;font:inherit}input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px #7c3aed26}
+button.primary,.google{width:100%;min-height:48px;border-radius:13px;border:0;font:inherit;font-weight:700;cursor:pointer}.primary{background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff}.primary:disabled{opacity:.55}
+.google{margin-top:12px;background:#fff;color:#111827;display:grid;place-items:center}.sep{display:flex;align-items:center;gap:10px;color:#94a3b8;margin:18px 0;font-size:12px}.sep:before,.sep:after{content:"";height:1px;background:#ffffff1a;flex:1}.msg{min-height:22px;margin-top:14px;text-align:center;font-size:13px;color:#94a3b8}.msg.error{color:#fca5a5}.msg.ok{color:#86efac}.hidden{display:none!important}.note{margin-top:18px;color:#94a3b8;font-size:11px;line-height:1.8;text-align:center}
 </style>
 </head>
 <body>
 <main class="card">
-<div class="logo">🔐</div>
-<h1>ورود امن</h1>
-<div class="sub">ورود سریع با حساب Google یا شماره موبایل</div>
-
-<div class="tabs">
-<button class="tab active" data-mode="google">Google</button>
-<button class="tab" data-mode="phone">پیامک</button>
-</div>
-
-<section id="googlePanel">
-<div class="google" id="googleButton"></div>
-</section>
-
-<section id="phonePanel" class="hidden">
-<label for="phone">شماره موبایل</label>
-<input id="phone" inputmode="tel" autocomplete="tel" placeholder="09121234567" maxlength="13">
-<button class="primary" id="sendBtn">ارسال کد</button>
-
-<div id="otpBox" class="hidden">
-<label for="otp">کد ۶ رقمی</label>
-<input id="otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
-<button class="primary" id="verifyBtn">تأیید و ورود</button>
-</div>
-</section>
-
-<div id="message" class="msg" aria-live="polite"></div>
-<div class="note">اتصال امن و مدیریت نشست توسط Cloudflare Worker انجام می‌شود.</div>
+<header class="brand"><div class="logo">N</div><h1>ورود به حساب</h1><div class="muted">احراز هویت امن و سریع</div></header>
+<div class="tabs"><button class="tab active" id="pt" type="button">ایمیل و رمز</button><button class="tab" id="st" type="button">پیامک</button></div>
+<form id="pf">
+<div class="field"><label for="email">ایمیل</label><input id="email" type="email" autocomplete="username" maxlength="254" required></div>
+<div class="field"><label for="password">رمز عبور</label><input id="password" type="password" autocomplete="current-password" minlength="12" maxlength="128" required></div>
+<button class="primary" id="pb">ورود</button>
+</form>
+<form id="sf" class="hidden">
+<div id="s1"><div class="field"><label for="phone">شماره موبایل</label><input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="09121112222" maxlength="13" required></div><button class="primary">ارسال کد</button></div>
+<div id="s2" class="hidden"><div class="field"><label for="otp">کد ۶ رقمی</label><input id="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"></div><button class="primary" type="button" id="vb">تأیید کد</button></div>
+</form>
+<div class="sep">یا</div><div id="google" class="google">ورود با Google</div>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+<div class="note">کلید API، Bearer و OTP Pepper در این صفحه وجود ندارند؛ اعتبارسنجی نهایی در Worker انجام می‌شود.</div>
 </main>
-
 <script>
-(() => {
-"use strict";
-
-/*
- * Only the public API origin and public Google Client ID belong in frontend.
- * NEVER place APIIR_BEARER, OTP_PEPPER or any private secret here.
- */
-const CONFIG = Object.freeze({
-  API_BASE: "https://YOUR-WORKER.example.workers.dev",
-  GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
-  SUCCESS_URL: "index.html"
+(()=>{"use strict";
+const CONFIG=Object.freeze({
+ API_BASE:"https://YOUR-WORKER.YOUR-SUBDOMAIN.workers.dev",
+ GOOGLE_CLIENT_ID:"YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com",
+ AFTER_LOGIN:"/Ncst/"
 });
-
-let challengeId = null;
-
-const $ = id => document.getElementById(id);
-const message = text => $("message").textContent = text;
-
-function api(path, options = {}) {
-  return fetch(CONFIG.API_BASE + path, {
-    credentials: "include",
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  });
-}
-
-async function readResponse(response) {
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok || data.ok === false) {
-    throw new Error(data?.error?.message || "درخواست ناموفق بود.");
-  }
-  return data;
-}
-
-async function initGoogle() {
-  if (!window.google?.accounts?.id) {
-    setTimeout(initGoogle, 150);
-    return;
-  }
-
-  google.accounts.id.initialize({
-    client_id: CONFIG.GOOGLE_CLIENT_ID,
-    callback: async response => {
-      try {
-        message("در حال ورود...");
-        const r = await api("/api/auth/google", {
-          method: "POST",
-          body: JSON.stringify({ credential: response.credential, deviceName: "Google" })
-        });
-        await readResponse(r);
-        location.replace(CONFIG.SUCCESS_URL);
-      } catch (e) {
-        message(e.message);
-      }
-    },
-    auto_select: false,
-    cancel_on_tap_outside: true
-  });
-
-  google.accounts.id.renderButton($("googleButton"), {
-    theme: "outline",
-    size: "large",
-    width: 320,
-    text: "signin_with",
-    shape: "rectangular"
-  });
-}
-
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
-    tab.classList.add("active");
-    const google = tab.dataset.mode === "google";
-    $("googlePanel").classList.toggle("hidden", !google);
-    $("phonePanel").classList.toggle("hidden", google);
-    message("");
-  });
-});
-
-$("sendBtn").addEventListener("click", async () => {
-  const phone = $("phone").value.trim();
-  $("sendBtn").disabled = true;
-  try {
-    const r = await api("/api/auth/phone/request", {
-      method: "POST",
-      body: JSON.stringify({ phone, deviceName: "Mobile" })
-    });
-    const data = await readResponse(r);
-    challengeId = data.challengeId;
-    $("otpBox").classList.remove("hidden");
-    message("اگر شماره معتبر باشد، کد ارسال شده است.");
-  } catch (e) {
-    message(e.message);
-  } finally {
-    setTimeout(() => $("sendBtn").disabled = false, 30000);
-  }
-});
-
-$("verifyBtn").addEventListener("click", async () => {
-  const phone = $("phone").value.trim();
-  const code = $("otp").value.trim();
-
-  $("verifyBtn").disabled = true;
-  try {
-    if (!challengeId) throw new Error("ابتدا درخواست کد کنید.");
-    const r = await api("/api/auth/phone/verify", {
-      method: "POST",
-      body: JSON.stringify({ phone, code, challengeId, deviceName: "Mobile" })
-    });
-    await readResponse(r);
-    location.replace(CONFIG.SUCCESS_URL);
-  } catch (e) {
-    message(e.message);
-  } finally {
-    $("verifyBtn").disabled = false;
-  }
-});
-
-initGoogle();
+const $=s=>document.querySelector(s),msg=$("#msg");
+function show(t,c=""){msg.textContent=t;msg.className="msg "+c}
+async function api(path,opt={}){const h=new Headers(opt.headers||{});h.set("Content-Type","application/json");const r=await fetch(CONFIG.API_BASE+path,{...opt,credentials:"include",headers:h});let d=null;try{d=await r.json()}catch{}if(!r.ok)throw Error(d?.error?.message||"درخواست ناموفق بود.");return d}
+function success(d){if(d?.csrfToken)sessionStorage.setItem("SA_CSRF",d.csrfToken);location.assign(CONFIG.AFTER_LOGIN)}
+$("#pt").onclick=()=>{ $("#pt").classList.add("active");$("#st").classList.remove("active");$("#pf").classList.remove("hidden");$("#sf").classList.add("hidden")};
+$("#st").onclick=()=>{ $("#st").classList.add("active");$("#pt").classList.remove("active");$("#sf").classList.remove("hidden");$("#pf").classList.add("hidden")};
+$("#pf").onsubmit=async e=>{e.preventDefault();show("در حال بررسی...");try{success(await api("/api/auth/login",{method:"POST",body:JSON.stringify({email:$("#email").value,password:$("#password").value,deviceName:"Web Browser"})}))}catch(x){show(x.message,"error")}};
+let phone="",challengeId="";
+$("#sf").onsubmit=async e=>{e.preventDefault();phone=$("#phone").value.trim();show("در حال ارسال کد...");try{const d=await api("/api/auth/phone/request",{method:"POST",body:JSON.stringify({phone})});challengeId=d.challengeId;$("#s1").classList.add("hidden");$("#s2").classList.remove("hidden");show("کد ارسال شد.","ok");$("#otp").focus()}catch(x){show(x.message,"error")}};
+$("#vb").onclick=async()=>{const code=$("#otp").value.trim();if(!/^\d{6}$/.test(code))return show("کد باید ۶ رقم باشد.","error");show("در حال بررسی...");try{success(await api("/api/auth/phone/verify",{method:"POST",body:JSON.stringify({phone,challengeId,code,deviceName:"Mobile Browser"})}))}catch(x){show(x.message,"error")}};
+window.addEventListener("load",()=>{if(!window.google?.accounts?.id||CONFIG.GOOGLE_CLIENT_ID.startsWith("YOUR_"))return;google.accounts.id.initialize({client_id:CONFIG.GOOGLE_CLIENT_ID,callback:async r=>{try{show("در حال بررسی حساب Google...");success(await api("/api/auth/google",{method:"POST",body:JSON.stringify({credential:r.credential,deviceName:"Google Browser"})}))}catch(x){show(x.message,"error")}},auto_select:false,cancel_on_tap_outside:true});google.accounts.id.renderButton($("#google"),{theme:"outline",size:"large",width:360,text:"signin_with"})});
 })();
 </script>
 </body>
