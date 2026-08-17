@@ -1,12 +1,8 @@
 {
-  "name": "secure-auth-package",
-  "version": "2.0.0",
+  "name": "secure-auth-v4",
+  "version": "4.0.0",
   "private": true,
-  "description": "Reusable Cloudflare Workers + D1 authentication baseline",
   "scripts": {
-    "test": "node --test tests/security.test.js"
-  },
-  "engines": {
-    "node": ">=20"
+    "check": "node --check workers.js"
   }
 }
