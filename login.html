@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Secure Login</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top,#132b48,#050b13 65%);color:#eef4ff;font-family:system-ui,Tahoma,sans-serif}
+.card{width:min(440px,100%);padding:30px;border:1px solid #263b55;border-radius:24px;background:#0b1727ee;box-shadow:0 30px 90px #0009}.brand{display:flex;gap:12px;align-items:center;margin-bottom:25px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#67e8f9,#818cf8);color:#06101b;font-weight:900;font-size:20px}h1{margin:0;font-size:25px}.muted{color:#91a0b6;font-size:13px;margin-top:5px}
+label{display:block;margin:17px 0 7px;font-size:13px;color:#cdd8e8}input{width:100%;height:52px;border-radius:14px;border:1px solid #263b55;background:#061120;color:white;padding:0 15px;outline:none;font-size:15px}input:focus{border-color:#67e8f9;box-shadow:0 0 0 3px #67e8f922}.pw{position:relative}.pw button{position:absolute;left:7px;top:7px;height:38px;border:0;border-radius:10px;background:#16283e;color:#cbd5e1}
+#login{width:100%;height:52px;border:0;border-radius:14px;margin-top:22px;background:linear-gradient(135deg,#67e8f9,#818cf8);font-weight:800;cursor:pointer}.status{display:none;margin-top:15px;padding:12px;border-radius:12px;font-size:13px;line-height:1.7}.status.show{display:block}.bad{background:#7f1d1d55;border:1px solid #fb718566;color:#fecdd3}.good{background:#064e3b55;border:1px solid #34d39966;color:#a7f3d0}
+.spinner{display:inline-block;width:15px;height:15px;border:2px solid #0004;border-top-color:#06101b;border-radius:50%;animation:r .7s linear infinite;vertical-align:-3px;margin-left:7px}@keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<main class="card">
+<div class="brand"><div class="logo">A</div><div><h1>ورود امن</h1><div class="muted">احراز هویت چندلایه</div></div></div>
+<form id="form" novalidate>
+<label for="email">ایمیل</label><input id="email" type="email" autocomplete="username" maxlength="254" required>
+<label for="password">رمز عبور</label><div class="pw"><input id="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" required><button type="button" id="toggle">نمایش</button></div>
+<button id="login" type="submit">ورود</button><div id="status" class="status" role="alert"></div>
+</form>
+</main>
+<script>
+(()=>{"use strict";
+const API_BASE="https://shy-snow-16a6.gilasexport.workers.devr";
+const REDIRECT_AFTER_LOGIN="/dashboard.html";
+const $=id=>document.getElementById(id),form=$("form"),email=$("email"),password=$("password"),button=$("login"),status=$("status");
+function show(t,c="bad"){status.textContent=t;status.className="status show "+c}
+$("toggle").onclick=()=>{password.type=password.type==="password"?"text":"password";$("toggle").textContent=password.type==="password"?"نمایش":"مخفی"};
+function validEmail(v){return v.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
+form.onsubmit=async e=>{e.preventDefault();status.className="status";const em=email.value.trim().toLowerCase(),pw=password.value;if(!validEmail(em)||pw.length<10||pw.length>128)return show("ایمیل یا رمز عبور صحیح نیست.");
+button.disabled=true;button.innerHTML='<span class="spinner"></span>در حال بررسی';
+try{const r=await fetch(API_BASE+"/api/auth/login",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,password:pw})});const d=await r.json().catch(()=>null);if(!r.ok||!d?.ok)return show(d?.error?.message||"ورود انجام نشد.");if(d.csrfToken)sessionStorage.setItem("SA_CSRF",d.csrfToken);show("ورود موفق بود. در حال انتقال...","good");location.replace(REDIRECT_AFTER_LOGIN)}catch(x){console.error(x);show("ارتباط با سرویس ورود برقرار نشد.")}finally{button.disabled=false;button.textContent="ورود"}};
+})();
+</script>
+</body>
+</html>
