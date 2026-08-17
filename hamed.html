@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#111827">
+<title>Backlink Task Manager</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#f3f4f6;--card:#fff;--text:#111827;--muted:#6b7280;
+  --primary:#6366f1;--primary2:#8b5cf6;--green:#10b981;--red:#ef4444;
+  --border:#e5e7eb;--shadow:0 8px 28px rgba(17,24,39,.08)
+}
+body{margin:0;background:linear-gradient(180deg,#0f172a 0 245px,#f4f6fb 245px);
+font-family:Tahoma,"Segoe UI",sans-serif;color:var(--text);min-height:100vh}
+.app{width:min(760px,100%);margin:auto;padding:18px 14px 34px}
+.hero{color:#fff;padding:12px 4px 22px}
+.hero .eyebrow{font-size:12px;opacity:.7;margin-bottom:8px}
+.hero h1{font-size:27px;letter-spacing:-.5px;margin:0 0 8px;font-weight:800}
+.hero p{margin:0;color:#d1d5db;font-size:13px;line-height:1.8}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:15px}
+.stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px 8px;text-align:center;backdrop-filter:blur(10px)}
+.stat b{display:block;font-size:19px}.stat span{font-size:10px;color:#d1d5db}
+.progress-wrap{background:var(--card);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.progress-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:9px}
+.progress{height:8px;background:#eef0f4;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--primary2));border-radius:99px;transition:.3s}
+.toolbar{display:flex;gap:8px;margin-bottom:12px}
+input{flex:1;border:1px solid var(--border);background:#fff;border-radius:14px;padding:12px 14px;font:inherit;font-size:13px;outline:none}
+button{border:0;font:inherit;cursor:pointer}
+.filter{padding:0 14px;border-radius:14px;background:#fff;border:1px solid var(--border);font-size:12px}
+.list{display:flex;flex-direction:column;gap:9px}
+.task{background:var(--card);border:1px solid rgba(229,231,235,.9);border-radius:20px;padding:13px;box-shadow:0 5px 18px rgba(17,24,39,.05);transition:.2s}
+.task.done{border-color:#a7f3d0;background:#f7fffb}
+.task.active{border-color:#c7d2fe;box-shadow:0 8px 24px rgba(99,102,241,.14)}
+.row{display:flex;align-items:center;gap:10px}
+.check{width:30px;height:30px;flex:0 0 30px;border-radius:10px;background:#f3f4f6;border:1px solid #d1d5db;display:grid;place-items:center;color:transparent;font-size:16px;font-weight:900}
+.done .check{background:#10b981;border-color:#10b981;color:#fff}
+.info{min-width:0;flex:1}
+.domain{font-size:13px;font-weight:700;direction:ltr;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{font-size:10px;color:var(--muted);margin-top:5px;display:flex;gap:8px;align-items:center;direction:rtl}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;color:var(--primary)}
+.final{font-variant-numeric:tabular-nums;color:#059669;font-weight:800}
+.open-btn{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:10px 13px;border-radius:13px;font-size:11px;white-space:nowrap;box-shadow:0 5px 12px rgba(99,102,241,.22)}
+.open-btn:disabled{opacity:.5}
+.confirm{display:none;width:100%;margin-top:10px;background:linear-gradient(135deg,#059669,#10b981);color:#fff;padding:10px;border-radius:12px;font-size:12px;font-weight:700}
+.active .confirm{display:block}
+.status{font-size:10px;color:var(--muted)}
+.empty{text-align:center;padding:30px;color:var(--muted);background:#fff;border-radius:18px}
+.note{font-size:10px;color:#9ca3af;text-align:center;margin-top:18px;line-height:1.8}
+@media(max-width:380px){.open-btn{padding:8px 9px}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="eyebrow">BACKLINK TASK MANAGER</div>
+    <h1>مدیریت لینک‌های Backlink</h1>
+    <p>هر لینک را باز کن، کار را انجام بده و بعد از بازگشت، همان مورد را تأیید کن تا زمان نهایی ثبت شود.</p>
+    <div class="stats">
+      <div class="stat"><b id="total">0</b><span>کل موارد</span></div>
+      <div class="stat"><b id="completed">0</b><span>تکمیل‌شده</span></div>
+      <div class="stat"><b id="remaining">0</b><span>باقی‌مانده</span></div>
+    </div>
+  </section>
+
+  <div class="progress-wrap">
+    <div class="progress-top"><span>پیشرفت</span><b id="percent">0%</b></div>
+    <div class="progress"><i id="bar"></i></div>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="جستجوی دامنه...">
+    <button class="filter" id="filterBtn">همه</button><button class="filter" id="resetBtn">پاک‌سازی</button>
+  </div>
+
+  <main class="list" id="list"></main>
+  <div class="note">مجموع 86 لینک یکتا • اطلاعات و زمان‌ها داخل همین مرورگر ذخیره می‌شوند و با Refresh از بین نمی‌روند.</div>
+</div>
+
+<script>
+const TASKS = [{"id":1,"label":"ello.co","url":"https://ello.co"},{"id":2,"label":"allblog.ir","url":"https://allblog.ir"},{"id":3,"label":"persianblog.ir","url":"https://persianblog.ir"},{"id":4,"label":"teblog.tebyan.net","url":"https://teblog.tebyan.net"},{"id":5,"label":"blogsky.com","url":"https://blogsky.com"},{"id":6,"label":"aramblog.ir","url":"https://aramblog.ir"},{"id":7,"label":"arasblog.ir","url":"https://arasblog.ir"},{"id":8,"label":"armanblog.ir","url":"https://armanblog.ir"},{"id":9,"label":"parsiblog.com","url":"https://parsiblog.com"},{"id":10,"label":"loxblog.com","url":"https://loxblog.com"},{"id":11,"label":"asblog.ir","url":"https://asblog.ir"},{"id":12,"label":"asemanblog.com","url":"https://asemanblog.com"},{"id":13,"label":"avablog.ir","url":"https://avablog.ir"},{"id":14,"label":"azadblog.com","url":"https://azadblog.com"},{"id":15,"label":"mihanblog.com","url":"https://mihanblog.com"},{"id":16,"label":"b88.ir","url":"https://b88.ir"},{"id":17,"label":"niloblog.com","url":"https://niloblog.com"},{"id":18,"label":"bigsite.ir","url":"https://bigsite.ir"},{"id":19,"label":"blogtez.com","url":"https://blogtez.com"},{"id":20,"label":"blog.ir","url":"https://blog.ir"},{"id":21,"label":"lxb.ir","url":"https://lxb.ir"},{"id":22,"label":"rasekhoon.net/weblog","url":"https://rasekhoon.net/weblog"},{"id":23,"label":"roomfa.com","url":"https://roomfa.com"},{"id":24,"label":"blogfa.com","url":"https://blogfa.com"},{"id":25,"label":"blogger.com","url":"https://blogger.com"},{"id":26,"label":"blogia.ir","url":"https://blogia.ir"},{"id":27,"label":"blogiran.net","url":"https://blogiran.net"},{"id":28,"label":"blograz.ir","url":"https://blograz.ir"},{"id":29,"label":"blogsazan.com","url":"https://blogsazan.com"},{"id":30,"label":"mizbanblog.com","url":"https://mizbanblog.com"},{"id":31,"label":"sunblog.ir","url":"https://sunblog.ir"},{"id":32,"label":"ccblog.ir","url":"https://ccblog.ir"},{"id":33,"label":"daryablog.ir","url":"https://daryablog.ir"},{"id":34,"label":"deyblog.ir","url":"https://deyblog.ir"},{"id":35,"label":"dibablog.com","url":"https://dibablog.com"},{"id":36,"label":"emyspot.com","url":"https://emyspot.com"},{"id":37,"label":"kowsarblog.ir","url":"https://kowsarblog.ir"},{"id":38,"label":"famblog.ir","url":"https://famblog.ir"},{"id":39,"label":"niniweblog.com","url":"https://niniweblog.com"},{"id":40,"label":"arzublog.com","url":"https://arzublog.com"},{"id":41,"label":"vistablog.ir","url":"https://vistablog.ir"},{"id":42,"label":"wordpressblog.ir","url":"https://wordpressblog.ir"},{"id":43,"label":"titablog.com","url":"https://titablog.com"},{"id":44,"label":"farazblog.com","url":"https://farazblog.com"},{"id":45,"label":"mahdiblog.com","url":"https://mahdiblog.com"},{"id":46,"label":"farsiblog.com","url":"https://farsiblog.com"},{"id":47,"label":"hamrahblog.com","url":"https://hamrahblog.com"},{"id":48,"label":"haniablog.com","url":"https://haniablog.com"},{"id":49,"label":"iranblag.com","url":"https://iranblag.com"},{"id":50,"label":"isblog.ir","url":"https://isblog.ir"},{"id":51,"label":"atizo.se","url":"https://atizo.se"},{"id":52,"label":"skillema.ir","url":"https://skillema.ir"},{"id":53,"label":"jahanblog.net","url":"https://jahanblog.net"},{"id":54,"label":"limoblog.ir","url":"https://limoblog.ir"},{"id":55,"label":"loger.ir","url":"https://loger.ir"},{"id":56,"label":"madblog.ir","url":"https://madblog.ir"},{"id":57,"label":"mahdiblog.comhome.html","url":"https://mahdiblog.comhome.html"},{"id":58,"label":"monoblog.ir","url":"https://monoblog.ir"},{"id":59,"label":"nasrblog.ir","url":"https://nasrblog.ir"},{"id":60,"label":"novinblog.net","url":"https://novinblog.net"},{"id":61,"label":"javanblog.ir","url":"https://javanblog.ir"},{"id":62,"label":"over-blog.com","url":"https://over-blog.com"},{"id":63,"label":"p20.ir","url":"https://p20.ir"},{"id":64,"label":"parsablog.com","url":"https://parsablog.com"},{"id":65,"label":"parseblog.ir","url":"https://parseblog.ir"},{"id":66,"label":"parsunit.comblog","url":"https://parsunit.comblog"},{"id":67,"label":"penzu.com","url":"https://penzu.com"},{"id":68,"label":"rahatblog.ir","url":"https://rahatblog.ir"},{"id":69,"label":"ratablog.com","url":"https://ratablog.com"},{"id":70,"label":"rozblog.com","url":"https://rozblog.com"},{"id":71,"label":"samenblog.com","url":"https://samenblog.com"},{"id":72,"label":"shoplogger.ir","url":"https://shoplogger.ir"},{"id":73,"label":"site123.com","url":"https://site123.com"},{"id":74,"label":"takblog.net","url":"https://takblog.net"},{"id":75,"label":"tarlog.com","url":"https://tarlog.com"},{"id":76,"label":"teblog.tebyan.com","url":"https://teblog.tebyan.com"},{"id":77,"label":"tibablog.ir","url":"https://tibablog.ir"},{"id":78,"label":"tinblog.ir","url":"https://tinblog.ir"},{"id":79,"label":"tinysite.ir","url":"https://tinysite.ir"},{"id":80,"label":"titrblog.ir","url":"https://titrblog.ir"},{"id":81,"label":"toonblog.ir","url":"https://toonblog.ir"},{"id":82,"label":"ttblog.ir","url":"https://ttblog.ir"},{"id":83,"label":"tumblr.com","url":"https://tumblr.com"},{"id":84,"label":"viablog.ir","url":"https://viablog.ir"},{"id":85,"label":"webnashr.com","url":"https://webnashr.com"},{"id":86,"label":"yektablog.net","url":"https://yektablog.net"}];
+const STORAGE_KEY = "backlink_task_manager_v1";
+const state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+let activeTimers = {};
+let showOnlyPending = false;
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}
+function fmt(ms){
+  const s=Math.max(0,Math.floor(ms/1000)), h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+  return (h?String(h).padStart(2,"0")+":":"")+String(m).padStart(2,"0")+":"+String(sec).padStart(2,"0");
+}
+function esc(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+
+function render(){
+  const q=document.getElementById("search").value.trim().toLowerCase();
+  const list=document.getElementById("list");
+  const filtered=TASKS.filter(t=>{
+    const st=state[t.id]||{};
+    return (!showOnlyPending || !st.done) && (!q || t.label.toLowerCase().includes(q));
+  });
+  list.innerHTML="";
+  if(!filtered.length){list.innerHTML='<div class="empty">موردی پیدا نشد.</div>';}
+  filtered.forEach(t=>{
+    const st=state[t.id]||{};
+    const el=document.createElement("article");
+    el.className="task"+(st.done?" done":"")+(st.started&&!st.done?" active":"");
+    el.id="task-"+t.id;
+    el.innerHTML=`
+      <div class="row">
+        <button class="check" aria-label="تأیید">${st.done?"✓":""}</button>
+        <div class="info">
+          <div class="domain">${esc(t.label)}</div>
+          <div class="meta">
+            <span class="status">${st.done?"تکمیل شد":"آماده انجام"}</span>
+            ${st.done?`<span class="final">زمان: ${fmt(st.elapsed||0)}</span>`:""}
+            ${st.started&&!st.done?`<span class="timer" id="timer-${t.id}">${fmt(Date.now()-st.startedAt)}</span>`:""}
+          </div>
+        </div>
+        <button class="open-btn" ${st.done?"disabled":""}>${st.started?"باز کردن مجدد":"شروع و باز کردن"}</button>
+      </div>
+      <button class="confirm">✓ تأیید انجام کار و ثبت زمان</button>`;
+    list.appendChild(el);
+
+    el.querySelector(".open-btn").addEventListener("click",()=>{
+      startTask(t.id,t.url);
+    });
+    el.querySelector(".check").addEventListener("click",()=>{
+      if(!st.started || st.done){ if(st.done) return; startTask(t.id,t.url); }
+      else confirmTask(t.id);
+    });
+    el.querySelector(".confirm").addEventListener("click",()=>confirmTask(t.id));
+  });
+  updateStats();
+  Object.keys(activeTimers).forEach(k=>clearInterval(activeTimers[k]));
+  activeTimers={};
+  TASKS.forEach(t=>{
+    const st=state[t.id];
+    if(st && st.started && !st.done){
+      const node=document.getElementById("timer-"+t.id);
+      if(node) activeTimers[t.id]=setInterval(()=>{node.textContent=fmt(Date.now()-st.startedAt)},500);
+    }
+  });
+}
+
+function startTask(id,url){
+  const st=state[id]||{};
+  if(!st.started){
+    state[id]={started:true,startedAt:Date.now(),done:false,elapsed:0};
+    save();
+  }
+  const w=window.open(url,"_blank","noopener,noreferrer");
+  if(!w){
+    alert("مرورگر اجازه باز شدن صفحه جدید را نداد. لطفاً Pop-up را برای این صفحه فعال کنید.");
+  }
+  render();
+}
+
+function confirmTask(id){
+  const st=state[id];
+  if(!st || !st.started || st.done) return;
+  st.elapsed=Date.now()-st.startedAt;
+  st.done=true;
+  st.completedAt=Date.now();
+  save();
+  render();
+}
+
+function updateStats(){
+  const total=TASKS.length;
+  const completed=TASKS.filter(t=>state[t.id]?.done).length;
+  const remaining=total-completed;
+  const p=total?Math.round(completed/total*100):0;
+  document.getElementById("total").textContent=total;
+  document.getElementById("completed").textContent=completed;
+  document.getElementById("remaining").textContent=remaining;
+  document.getElementById("percent").textContent=p+"%";
+  document.getElementById("bar").style.width=p+"%";
+}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("resetBtn").addEventListener("click",()=>{
+  if(!confirm("همه زمان‌ها و وضعیت‌های ثبت‌شده پاک شود؟")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+});
+document.getElementById("filterBtn").addEventListener("click",()=>{
+  showOnlyPending=!showOnlyPending;
+  document.getElementById("filterBtn").textContent=showOnlyPending?"انجام‌نشده":"همه";
+  render();
+});
+render();
+</script>
+</body>
+  </html>
