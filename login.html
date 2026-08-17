@@ -1,37 +1,192 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<title>Secure Login</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>ورود امن</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top,#132b48,#050b13 65%);color:#eef4ff;font-family:system-ui,Tahoma,sans-serif}
-.card{width:min(440px,100%);padding:30px;border:1px solid #263b55;border-radius:24px;background:#0b1727ee;box-shadow:0 30px 90px #0009}.brand{display:flex;gap:12px;align-items:center;margin-bottom:25px}.logo{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(135deg,#67e8f9,#818cf8);color:#06101b;font-weight:900;font-size:20px}h1{margin:0;font-size:25px}.muted{color:#91a0b6;font-size:13px;margin-top:5px}
-label{display:block;margin:17px 0 7px;font-size:13px;color:#cdd8e8}input{width:100%;height:52px;border-radius:14px;border:1px solid #263b55;background:#061120;color:white;padding:0 15px;outline:none;font-size:15px}input:focus{border-color:#67e8f9;box-shadow:0 0 0 3px #67e8f922}.pw{position:relative}.pw button{position:absolute;left:7px;top:7px;height:38px;border:0;border-radius:10px;background:#16283e;color:#cbd5e1}
-#login{width:100%;height:52px;border:0;border-radius:14px;margin-top:22px;background:linear-gradient(135deg,#67e8f9,#818cf8);font-weight:800;cursor:pointer}.status{display:none;margin-top:15px;padding:12px;border-radius:12px;font-size:13px;line-height:1.7}.status.show{display:block}.bad{background:#7f1d1d55;border:1px solid #fb718566;color:#fecdd3}.good{background:#064e3b55;border:1px solid #34d39966;color:#a7f3d0}
-.spinner{display:inline-block;width:15px;height:15px;border:2px solid #0004;border-top-color:#06101b;border-radius:50%;animation:r .7s linear infinite;vertical-align:-3px;margin-left:7px}@keyframes r{to{transform:rotate(360deg)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#080c18;color:#fff}
+body{display:grid;place-items:center;padding:20px}
+.card{width:min(430px,100%);background:#11182a;border:1px solid #27314a;border-radius:26px;padding:28px;box-shadow:0 20px 70px #0008}
+.logo{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#1e293b;margin:auto auto 18px;font-size:28px}
+h1{text-align:center;font-size:25px;margin:0 0 8px}
+.sub{text-align:center;color:#9aa6bd;font-size:14px;margin-bottom:24px}
+.tabs{display:flex;gap:8px;background:#0b1020;padding:5px;border-radius:14px;margin-bottom:18px}
+.tab{flex:1;border:0;border-radius:10px;padding:11px;background:transparent;color:#9aa6bd;cursor:pointer}
+.tab.active{background:#24304a;color:#fff}
+label{display:block;font-size:13px;color:#b8c2d6;margin:12px 0 7px}
+input{width:100%;height:50px;border-radius:13px;border:1px solid #303b55;background:#0b1020;color:#fff;padding:0 14px;font-size:16px;outline:none}
+input:focus{border-color:#7285b0}
+button.primary{width:100%;height:50px;border:0;border-radius:13px;background:#fff;color:#090d18;font-weight:700;font-size:15px;margin-top:15px;cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+.google{width:100%;display:flex;justify-content:center;margin-top:14px;min-height:44px}
+.sep{display:flex;align-items:center;gap:10px;color:#6f7a91;font-size:12px;margin:17px 0}
+.sep:before,.sep:after{content:"";height:1px;background:#29344b;flex:1}
+.msg{min-height:24px;text-align:center;margin-top:14px;font-size:13px;color:#ffb4b4}
+.hidden{display:none!important}
+.otp{letter-spacing:7px;text-align:center;font-size:21px;direction:ltr}
+.note{text-align:center;color:#71809b;font-size:11px;line-height:1.8;margin-top:18px}
 </style>
 </head>
 <body>
 <main class="card">
-<div class="brand"><div class="logo">A</div><div><h1>ورود امن</h1><div class="muted">احراز هویت چندلایه</div></div></div>
-<form id="form" novalidate>
-<label for="email">ایمیل</label><input id="email" type="email" autocomplete="username" maxlength="254" required>
-<label for="password">رمز عبور</label><div class="pw"><input id="password" type="password" autocomplete="current-password" minlength="10" maxlength="128" required><button type="button" id="toggle">نمایش</button></div>
-<button id="login" type="submit">ورود</button><div id="status" class="status" role="alert"></div>
-</form>
+<div class="logo">🔐</div>
+<h1>ورود امن</h1>
+<div class="sub">ورود سریع با حساب Google یا شماره موبایل</div>
+
+<div class="tabs">
+<button class="tab active" data-mode="google">Google</button>
+<button class="tab" data-mode="phone">پیامک</button>
+</div>
+
+<section id="googlePanel">
+<div class="google" id="googleButton"></div>
+</section>
+
+<section id="phonePanel" class="hidden">
+<label for="phone">شماره موبایل</label>
+<input id="phone" inputmode="tel" autocomplete="tel" placeholder="09121234567" maxlength="13">
+<button class="primary" id="sendBtn">ارسال کد</button>
+
+<div id="otpBox" class="hidden">
+<label for="otp">کد ۶ رقمی</label>
+<input id="otp" class="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+<button class="primary" id="verifyBtn">تأیید و ورود</button>
+</div>
+</section>
+
+<div id="message" class="msg" aria-live="polite"></div>
+<div class="note">اتصال امن و مدیریت نشست توسط Cloudflare Worker انجام می‌شود.</div>
 </main>
+
 <script>
-(()=>{"use strict";
-const API_BASE="https://shy-snow-16a6.gilasexport.workers.devr";
-const REDIRECT_AFTER_LOGIN="/dashboard.html";
-const $=id=>document.getElementById(id),form=$("form"),email=$("email"),password=$("password"),button=$("login"),status=$("status");
-function show(t,c="bad"){status.textContent=t;status.className="status show "+c}
-$("toggle").onclick=()=>{password.type=password.type==="password"?"text":"password";$("toggle").textContent=password.type==="password"?"نمایش":"مخفی"};
-function validEmail(v){return v.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)}
-form.onsubmit=async e=>{e.preventDefault();status.className="status";const em=email.value.trim().toLowerCase(),pw=password.value;if(!validEmail(em)||pw.length<10||pw.length>128)return show("ایمیل یا رمز عبور صحیح نیست.");
-button.disabled=true;button.innerHTML='<span class="spinner"></span>در حال بررسی';
-try{const r=await fetch(API_BASE+"/api/auth/login",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:em,password:pw})});const d=await r.json().catch(()=>null);if(!r.ok||!d?.ok)return show(d?.error?.message||"ورود انجام نشد.");if(d.csrfToken)sessionStorage.setItem("SA_CSRF",d.csrfToken);show("ورود موفق بود. در حال انتقال...","good");location.replace(REDIRECT_AFTER_LOGIN)}catch(x){console.error(x);show("ارتباط با سرویس ورود برقرار نشد.")}finally{button.disabled=false;button.textContent="ورود"}};
+(() => {
+"use strict";
+
+/*
+ * Only the public API origin and public Google Client ID belong in frontend.
+ * NEVER place APIIR_BEARER, OTP_PEPPER or any private secret here.
+ */
+const CONFIG = Object.freeze({
+  API_BASE: "https://YOUR-WORKER.example.workers.dev",
+  GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+  SUCCESS_URL: "index.html"
+});
+
+let challengeId = null;
+
+const $ = id => document.getElementById(id);
+const message = text => $("message").textContent = text;
+
+function api(path, options = {}) {
+  return fetch(CONFIG.API_BASE + path, {
+    credentials: "include",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+}
+
+async function readResponse(response) {
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok || data.ok === false) {
+    throw new Error(data?.error?.message || "درخواست ناموفق بود.");
+  }
+  return data;
+}
+
+async function initGoogle() {
+  if (!window.google?.accounts?.id) {
+    setTimeout(initGoogle, 150);
+    return;
+  }
+
+  google.accounts.id.initialize({
+    client_id: CONFIG.GOOGLE_CLIENT_ID,
+    callback: async response => {
+      try {
+        message("در حال ورود...");
+        const r = await api("/api/auth/google", {
+          method: "POST",
+          body: JSON.stringify({ credential: response.credential, deviceName: "Google" })
+        });
+        await readResponse(r);
+        location.replace(CONFIG.SUCCESS_URL);
+      } catch (e) {
+        message(e.message);
+      }
+    },
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+
+  google.accounts.id.renderButton($("googleButton"), {
+    theme: "outline",
+    size: "large",
+    width: 320,
+    text: "signin_with",
+    shape: "rectangular"
+  });
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    tab.classList.add("active");
+    const google = tab.dataset.mode === "google";
+    $("googlePanel").classList.toggle("hidden", !google);
+    $("phonePanel").classList.toggle("hidden", google);
+    message("");
+  });
+});
+
+$("sendBtn").addEventListener("click", async () => {
+  const phone = $("phone").value.trim();
+  $("sendBtn").disabled = true;
+  try {
+    const r = await api("/api/auth/phone/request", {
+      method: "POST",
+      body: JSON.stringify({ phone, deviceName: "Mobile" })
+    });
+    const data = await readResponse(r);
+    challengeId = data.challengeId;
+    $("otpBox").classList.remove("hidden");
+    message("اگر شماره معتبر باشد، کد ارسال شده است.");
+  } catch (e) {
+    message(e.message);
+  } finally {
+    setTimeout(() => $("sendBtn").disabled = false, 30000);
+  }
+});
+
+$("verifyBtn").addEventListener("click", async () => {
+  const phone = $("phone").value.trim();
+  const code = $("otp").value.trim();
+
+  $("verifyBtn").disabled = true;
+  try {
+    if (!challengeId) throw new Error("ابتدا درخواست کد کنید.");
+    const r = await api("/api/auth/phone/verify", {
+      method: "POST",
+      body: JSON.stringify({ phone, code, challengeId, deviceName: "Mobile" })
+    });
+    await readResponse(r);
+    location.replace(CONFIG.SUCCESS_URL);
+  } catch (e) {
+    message(e.message);
+  } finally {
+    $("verifyBtn").disabled = false;
+  }
+});
+
+initGoogle();
 })();
 </script>
 </body>
